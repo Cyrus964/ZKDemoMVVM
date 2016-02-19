@@ -1,0 +1,27 @@
+<panel id="mainPanel" viewModel="@id('global') @init('demo.mvvm.ui.MainLayoutViewModel')">
+
+	<panelchildren viewModel="@id('personVM') @init('demo.mvvm.person.PersonViewModel')">
+	
+		<listbox model="@load(personVM.persons)" selectedItem="@bind(personVM.selectedPerson)">
+			<listhead>
+			    <listheader label="Last name" width="100px" />
+			    <listheader label="First name" width="100px" />
+			    <listheader label="Email" />
+			    <listheader label="Address" />
+			</listhead>
+			<template name="model">
+			    <listitem>
+			        <listcell label="@load(each.lastName)" />
+			        <listcell label="@load(each.firstName)" />
+			        <listcell label="@load(each.email)" />
+			        <listcell label="@load(each.address.completeAddress)" />
+			    </listitem>
+			</template>
+		</listbox>
+		
+		<button label="Address" disabled="@load(empty personVM.selectedPerson)"
+			onClick="@global-command('createWindow', uri='/addressList.zul', parent=mainPanel, eventQueue=personVM.addressEventQueueName)" />
+	
+	</panelchildren>
+
+</panel>
