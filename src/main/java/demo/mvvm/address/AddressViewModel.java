@@ -2,15 +2,12 @@ package demo.mvvm.address;
 
 import java.util.List;
 
-import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
-
-import demo.mvvm.ui.ViewModel;
 
 /**
  * @author DRIESBACH Olivier - olivier.driesbach(at)gmail.com
  */
-public class AddressViewModel extends ViewModel {
+public class AddressViewModel {
 
 	/** */
     private List<Address> addresses;
@@ -35,11 +32,6 @@ public class AddressViewModel extends ViewModel {
 		this.selectedAddress = selectedAddress;
 	}
  
-    @Command
-    public void fireSelectedAddress() {
-        fireEvent(ADDRESS_EVENT_QUEUE, ON_ADDRESS_SELECTED, getSelectedAddress());
-    }
-    
     private void initAddresses() {
     	addresses = new AddressService().findAll();
 	}

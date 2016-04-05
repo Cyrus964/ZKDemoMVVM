@@ -2,18 +2,18 @@ package demo.mvvm.person;
 
 import java.util.List;
 
+import org.zkoss.bind.annotation.BindingParam;
+import org.zkoss.bind.annotation.Command;
+import org.zkoss.bind.annotation.GlobalCommand;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 
 import demo.mvvm.address.Address;
-import demo.mvvm.ui.ViewModel;
 
 /**
  * @author DRIESBACH Olivier - olivier.driesbach(at)gmail.com
  */
-public class PersonViewModel extends ViewModel {
+public class PersonViewModel {
 	
 	/** */
 	protected List<Person> persons;
@@ -21,9 +21,13 @@ public class PersonViewModel extends ViewModel {
 	/** */
 	private Person selectedPerson;
 	
+	/** */
+	private boolean selectAddress;
+	
 	@Init(superclass=true)
 	public void initPersonViewModel() {
 		initPersons();
+		selectAddress = false;
 	}
 	
 	/**
@@ -46,47 +50,47 @@ public class PersonViewModel extends ViewModel {
 	 * 
 	 * @param selectedPerson
 	 */
-	@NotifyChange("selectedPerson")
 	public void setSelectedPerson(Person selectedPerson) {
 		this.selectedPerson = selectedPerson;
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * @return the selectAddress
 	 */
-	public String getAddressEventQueueName() {
-		return ADDRESS_EVENT_QUEUE;
+	public boolean isSelectAddress() {
+		return selectAddress;
+	}
+
+	/**
+	 * @param selectAddress the selectAddress to set
+	 */
+	public void setSelectAddress(boolean selectAddress) {
+		this.selectAddress = selectAddress;
 	}
 	
+	@Command
+	@NotifyChange("selectAddress")
+	public void selectAddress() {
+		selectAddress = true; // Activate the address selection mode
+	}
+	
+	@GlobalCommand
+	@NotifyChange({"selectedPerson", "selectAddress"})
+	public void updateAddress(@BindingParam("address") Address address) {
+		getSelectedPerson().setAddress(address);
+		selectAddress = false; // Disable the address selection mode
+	}
+	
+	@GlobalCommand
+	@NotifyChange("selectAddress")
+	public void cancelAddress(@BindingParam("address") Address address) {
+		selectAddress = false; // Disable the address selection mode
+	}
+
 	/**
 	 * 
 	 */
 	protected void initPersons() {
 		persons = new PersonService().findAll();
-	}
-	
-	@Override
-	protected void subscribeToEventQueues() {
-		
-		addEventListener(getAddressEventQueueName(), new EventListener<Event>() {
-			@Override
-			public void onEvent(Event event) throws Exception {
-				
-				if (ON_ADDRESS_SELECTED.equals(event.getName())) {
-					assignAddress((Address) event.getData());
-				}
-			}
-		});
-
-		// add all listeners you want here ...
-	}
-	
-	/**
-	 *
-	 */
-	private void assignAddress(Address address) {
-		getSelectedPerson().setAddress(address);
-		notifyChange("selectedPerson");
 	}
 }

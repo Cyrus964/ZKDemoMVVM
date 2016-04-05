@@ -1,6 +1,6 @@
-<panel id="mainPanel" viewModel="@id('global') @init('demo.mvvm.ui.MainLayoutViewModel')">
+<window id="mainPanel">
 
-	<panelchildren viewModel="@id('personVM') @init('demo.mvvm.person.PersonViewModel')">
+	<vlayout viewModel="@id('personVM') @init('demo.mvvm.person.PersonViewModel')">
 	
 		<listbox model="@load(personVM.persons)" selectedItem="@bind(personVM.selectedPerson)">
 			<listhead>
@@ -19,9 +19,10 @@
 			</template>
 		</listbox>
 		
-		<button label="Address" disabled="@load(empty personVM.selectedPerson)"
-			onClick="@global-command('createWindow', uri='/addressList.zul', parent=mainPanel, eventQueue=personVM.addressEventQueueName)" />
-	
-	</panelchildren>
+		<button label="Address" disabled="@load(empty personVM.selectedPerson)" onClick="@command('selectAddress')" />
+		
+		<include src="@load(personVM.selectAddress ? 'addressList.zul' : '')" />
+		
+	</vlayout>
 
-</panel>
+</window>

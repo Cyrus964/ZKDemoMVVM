@@ -1,4 +1,4 @@
-<window title="Addresses" mode="modal" width="800px" closable="true" apply="demo.mvvm.address.AddressListComposer">
+<window title="Addresses" mode="modal" width="800px" closable="true" onClose="@global-command('cancelAddress')">
 
 	<vlayout viewModel="@id('addressVM') @init('demo.mvvm.address.AddressViewModel')">
 	
@@ -22,7 +22,7 @@
 		</listbox>
 		
 		<button label="Validate" disabled="@load(empty addressVM.selectedAddress)"
-			onClick="@command('fireSelectedAddress')" />
+			onClick="@global-command('updateAddress', address=addressVM.selectedAddress)" />
 	
 	</vlayout>
  
